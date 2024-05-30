@@ -1,0 +1,106 @@
+.css-1wvnaxz-MuiTableCell-root.MuiTableCell-head ,.css-1nslmh4-MuiTableCell-root.MuiTableCell-head {
+    background-color: #fff !important;
+    color: #5d8098 !important;
+    cursor: pointer;
+    color: #a3abaf;
+    font-weight: 800;
+    text-align: center;
+  
+}
+.upload-icon{
+        display: flex;
+        align-items: center;
+}
+.TableContainer{
+    
+    height: 200px; scroll-behavior: auto ;
+}
+.css-132a6sb-MuiTableCell-root.MuiTableCell-body {
+    color: #a3abaf;
+    font-weight: 600;
+}
+.css-1enotpu-MuiTableRow-root:nth-of-type(odd) {
+    background-color: rgb(181 164 164 / 4%);
+}
+.css-1d6wzja-MuiButton-startIcon {
+    margin: 0px !important;
+}
+.view-btn,.edit-btn,.delete-btn{
+    border: 1px solid gray !important;
+}
+.delete-btn{
+    color: red !important;
+}
+.view-btn{
+    color: green !important;
+}
+.edit-btn{
+    color: blue !important;
+}
+.search-typograpy{
+    border: 1px solid gray;
+    border-radius: 25px
+    
+
+}
+.search{
+    padding: 20px 55px !important;
+}
+.search-input{
+    padding: 10px 50px;
+    width: 100%
+}
+.upload-create{
+        
+        display: flex;
+        justify-content: center;
+    align-items: center;
+    
+}
+.upload-create:hover{
+    color: #fff;
+    cursor: pointer;
+}
+.DownloadIcon{
+    height: 18px !important;
+}
+.modalText{
+    color: red;
+     font-weight: 700 !important;
+}
+.search-input .MuiInputBase-root::before ,.search-typograpy input::before{
+border-bottom: none !important;
+/* padding: 10px 50px !important;
+    width: 100% !important; */
+
+}
+
+.css-10oj656 button {
+    background-color: #fff !important;
+    color: gray !important;
+  
+    border-radius: 20px;
+    margin: 0px !important;
+}
+.css-10oj656 button:hover {
+    background-color: #5336ac !important;
+    color: #fff !important;
+}
+.css-1ddsiuw-MuiListItemIcon-root{
+    color: #fff !important;
+}
+.css-1cag644-MuiListItemText-root{
+    opacity: 1 !important;
+    margin-left: 10px;
+}
+.css-1bhpkcd-MuiTableCell-root{
+    padding: 0 !important;
+}
+.dltBtn:hover{
+    background-color: red !important;
+    color: #fff;
+}
+.cancelBtn:hover{
+    background-color: green !important;
+    color: #fff;
+}

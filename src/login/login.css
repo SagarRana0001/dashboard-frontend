@@ -1,0 +1,114 @@
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: rgb(255, 255, 255);
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 1) 0%,
+    rgba(255, 255, 255, 1) 52%,
+    rgba(189, 191, 242, 1) 100%
+  );
+}
+.main {
+  display: flex;
+  width: 50%;
+  flex-direction: column;
+  align-items: center;
+  padding: 36px 36px;
+  transition: height 0.3s ease;
+  height: auto;
+}
+.main-paper {
+  display: flex;
+  width: 60%;
+  background-color: #0c0c0c;
+  flex-direction: row;
+  border-radius: 20px !important;
+  
+}
+
+
+.form-sign-in-txt{
+    text-align: center;
+    font-weight: bold !important;
+    font-size: 24px !important;
+}
+.form-sign-in-txt-small{
+    font-weight: normal !important;
+    font-size: 12px !important;
+    color: gray;
+}
+.icon-container {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    padding:12px 0
+  }
+  .icon-list-item{
+    padding: 4px 8px;
+    border-radius: 6px;
+    border: 1px solid lightgray;
+  }
+  .form-input .MuiFilledInput-root ,.form-input{
+    border-radius: 8px !important;
+   
+  }
+  .form-input {
+    width: 100% !important;
+    margin: 8px 0 !important;
+   color: gray !important;
+  }
+  .form-input .MuiFilledInput-input{
+   padding: 8px  !important;
+  }
+  .forgot-button{
+    color: gray !important;
+    font-size: 13px !important;
+    text-transform: initial !important;
+  
+
+  }
+  .sign-in-button{
+    background-color: #5336ac !important;
+    color: #fff  !important;
+    font-weight: bold !important;
+    padding: 6px 36px !important;
+    border-radius: 6px !important;
+    margin-top: 8px !important;
+
+  }
+  .card-side-container{
+      width: 50%;
+      background-color: #5336ac;
+      border-radius: 60px 0 0 60px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+      justify-content: center;
+      padding: 0 36px;
+      transition: 1s all linear;
+    }
+    .sign-up-btn{
+      background-color: transparent !important;
+      color: #fff  !important;
+      font-weight: bold !important;
+      padding: 6px 36px !important;
+      border-radius: 6px !important;
+      border: 1px solid #fff !important;
+  
+    }
+    .register-txt{
+        color: #fff !important;
+        font-size: 14px !important;
+        text-align: center;
+    }
+    .hello-user-txt{
+        font-weight: bold !important;
+        color: #fff !important;
+    }
+    .error-color{
+      color: red !important;
+    }

@@ -1,0 +1,23 @@
+ .total:hover,.active:hover{
+    background-color: #5336ac !important;
+    color: #fff;
+}
+.trash:hover{
+    background-color: #5336ac !important;
+    cursor: no-drop;
+    opacity: 0.2;
+    color: #fff;
+}
+.dwlIcon:hover{
+    cursor: no-drop !important;
+}
+.css-1q1s2v2-MuiButtonBase-root-MuiButton-root:hover{
+    background-color: black !important;
+    color: #fff !important;
+}
+.userFont{
+    font-size: 20px !important;
+    font-weight: 600 !important;
+    font-style: oblique;
+    font-variant: small-caps;
+}

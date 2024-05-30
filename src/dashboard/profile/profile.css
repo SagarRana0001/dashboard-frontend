@@ -1,0 +1,66 @@
+.main-card-edit{
+    width: 42% !important;
+}
+.profile-container{
+    display: flex !important;
+    justify-content: center !important;
+    gap: 10px !important;
+  
+}
+.edit-btn{
+    display: flex !important;
+    justify-content: flex-end !important;
+    width: 100%;
+}
+.border{
+    border: 10px solid #2962ff;
+    border-radius: 20px;
+   
+}
+.AddCircleOutlineIcon{
+  
+        width: 46;
+        height: 46;
+        color: #eeeeee7a;
+        cursor: pointer;
+      
+}
+.profile-text{
+  
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding-top: 25px;
+   
+}
+.cardhead{
+width: 100%;
+height: 150px;
+background-color: #5336ac;
+position: relative !important;
+}
+.EditIcon{
+    color: #fff;
+    cursor: pointer;
+}
+.css-17lvz0h-MuiPaper-root-MuiCard-root{
+    width: 38% !important;
+    border-radius: 10px !important;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19) !important;
+}
+input[type="file"] {
+    display: none;
+  }
+
+.img-avtar{
+    position: absolute !important;
+    left: 54.6% !important;
+    top: 35% !important;
+    width: 8.5% !important;
+    height: 100px !important;
+    border: 2px solid #fff;
+}
+.css-sghohy-MuiButtonBase-root-MuiButton-root {
+    background-color: #5336ac !important;
+}
