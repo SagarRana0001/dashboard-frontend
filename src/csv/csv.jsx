@@ -59,6 +59,7 @@ export default function CsvCard() {
               Total User
             </Typography>
             <Typography className="userFont" component="div">
+              {console.log(data)}
               {data?.allUsers?.length}
             </Typography>
             <Box sx={{ textAlign: "end", marginTop: "20px" }}>
