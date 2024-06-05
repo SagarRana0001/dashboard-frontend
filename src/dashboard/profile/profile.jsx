@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import Card from "@mui/material/Card";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
@@ -12,6 +12,7 @@ import {
   InputLabel,
   Stack,
 } from "@mui/material";
+import { useDispatch } from "react-redux";
 import RestartAltIcon from "@mui/icons-material/RestartAlt";
 import EditIcon from "@mui/icons-material/Edit";
 import axios from "axios";
@@ -22,15 +23,28 @@ import {
   LinkedIn,
 } from "@mui/icons-material";
 import "./profile.css";
-import { UserContext } from "../../App";
+import { reduxSnackbar } from "../../redux/slice/slice";
 
 export default function ProfileCard() {
+  const dispatch = useDispatch();
   const location = useLocation();
   const data = location?.state?.data;
   const [user, setUser] = useState({});
   const [image, setimage] = useState("");
   const cancel = () => {
     navigate("/dashboard");
+  };
+  const getData = async (data) => {
+    const response = await axios.put(`http://localhost:8000/upload`, data, {
+      headers: { Authorization: "Bearer" + token },
+    });
+    if (response) {
+      setimage(response.data.img);
+      setUser({ ...user, img: response.data.img });
+      console.log("Api did hit upload", response.data);
+    } else {
+      console.log("error in hitting the api upload");
+    }
   };
   const onlyUser = async (e) => {
     try {
@@ -49,11 +63,13 @@ export default function ProfileCard() {
 
           localStorage.setItem("user", JSON.stringify(user_img));
         } else {
-          useSnack.setSnackbar({
-            state: true,
-            message: "image is too big",
-            severity: "error",
-          });
+          dispatch(
+            reduxSnackbar({
+              state: true,
+              message: `Image is to big`,
+              severity: `error`,
+            })
+          );
         }
       };
     } catch (error) {}
@@ -72,7 +88,6 @@ export default function ProfileCard() {
   }, []);
 
   const navigate = useNavigate();
-  const useSnack = useContext(UserContext);
   const editProfile = (editdata) => {
     navigate("/dashboard/edit-user", { state: { editdata } });
   };
@@ -82,18 +97,6 @@ export default function ProfileCard() {
     <GitHub style={{ fontSize: "12px", cursor: "pointer" }} />,
     <LinkedIn style={{ fontSize: "12px", cursor: "pointer" }} />,
   ];
-  const getData = async (data) => {
-    const response = await axios.put(`http://localhost:8000/upload`, data, {
-      headers: { Authorization: "Bearer" + token },
-    });
-    if (response) {
-      setimage(response.data.img);
-      setUser({ ...user, img: response.data.img });
-      console.log("Api did hit upload", response.data);
-    } else {
-      console.log("error in hitting the api upload");
-    }
-  };
 
   return (
     <>

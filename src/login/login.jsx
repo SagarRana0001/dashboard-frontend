@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { UserContext } from "../App";
+// import { UserContext } from "../App";
 import {
   Google,
   FacebookOutlined,
@@ -20,7 +20,10 @@ import {
   Typography,
 } from "@mui/material";
 import "./login.css";
+import { useDispatch } from "react-redux";
+import { reduxSnackbar } from "../redux/slice/slice";
 const Login = () => {
+  const dispatch = useDispatch();
   const location = useLocation();
   const path = location.pathname;
   const {
@@ -45,7 +48,6 @@ const Login = () => {
     },
   });
   const [isSignIn, setIsSignIn] = useState(true);
-  const useSnack = useContext(UserContext);
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
@@ -67,21 +69,27 @@ const Login = () => {
           const userJsonData = JSON.stringify(user);
           localStorage.setItem("user", userJsonData);
           navigate("/dashboard");
-          useSnack.setSnackbar({
-            state: true,
-            message: response.data.message,
-            severity: response.data.status,
-          });
+          dispatch(
+            reduxSnackbar({
+              state: true,
+              message: response.data.message,
+              severity: response.data.severity,
+            })
+          );
         }
       } else {
-        useSnack.setSnackbar({
-          state: true,
-          message: response.data.message,
-        });
+        dispatch(
+          reduxSnackbar({
+            state: true,
+            message: response.data.message,
+            severity: response.data.severity,
+          })
+        );
       }
     }
     async function loginFunc(e) {
       const response = await axios.post("http://localhost:8000/login", data);
+      console.log(response, "res");
       if (response.data.status === "success") {
         if (response.data.token) {
           let token = response.data.token;
@@ -90,17 +98,22 @@ const Login = () => {
           const userJsonData = JSON.stringify(user);
           localStorage.setItem("user", userJsonData);
           navigate("/dashboard");
-          useSnack.setSnackbar({
+          dispatch(
+            reduxSnackbar({
+              state: true,
+              message: response.data.message,
+              severity: response.data.status,
+            })
+          );
+        }
+      } else {
+        dispatch(
+          reduxSnackbar({
             state: true,
             message: response.data.message,
             severity: response.data.status,
-          });
-        }
-      } else {
-        useSnack.setSnackbar({
-          state: true,
-          message: response.data.message,
-        });
+          })
+        );
       }
     }
   };

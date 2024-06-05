@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
@@ -15,6 +15,8 @@ import {
   Typography,
 } from "@mui/material";
 import "./update.css";
+import { useDispatch } from "react-redux";
+import { reduxSnackbar } from "../redux/slice/slice";
 
 const Form = () => {
   const location = useLocation();
@@ -36,8 +38,8 @@ const Form = () => {
     },
   });
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  const useSnack = useContext(UserContext);
   const onSubmit = (current_data, e) => {
     const token = localStorage.getItem("token");
     async function formHandel(e) {
@@ -57,11 +59,14 @@ const Form = () => {
       const userJsonData = user;
       localStorage.getItem("user", userJsonData);
       navigate("/dashboard/active");
-      useSnack.setSnackbar({
-        state: true,
-        message: response.data.message,
-        severity: response.data.status,
-      });
+
+      dispatch(
+        reduxSnackbar({
+          state: true,
+          message: response.data.message,
+          severity: response.data.status,
+        })
+      );
     }
     formHandel();
   };

@@ -26,7 +26,10 @@ import "./table.css";
 import { UserContext } from "../../App";
 import DownloadIcon from "@mui/icons-material/Download";
 import { StyledTableRow, StyledTableCell, style } from "./styleTableComponet";
+import { reduxSnackbar } from "../../redux/slice/slice";
+import { useDispatch } from "react-redux";
 export default function DataTable() {
+  const dispatch = useDispatch();
   const [jsonUser, setjsonUser] = useState({});
   const [dltData, setDltData] = useState();
   const [open, setOpen] = useState(false);
@@ -91,7 +94,6 @@ export default function DataTable() {
       AllDAta();
     }
   };
-  const useSnack = useContext(UserContext);
   const handleDownload = async (e, data) => {
     e.stopPropagation();
     const file = e.target.files[0];
@@ -118,18 +120,32 @@ export default function DataTable() {
       );
 
       if (response.status === 200) {
-        useSnack.setSnackbar({
-          state: true,
-          message: response.data.message,
-          severity: response.data.status,
-        });
+        dispatch(
+          reduxSnackbar({
+            state: true,
+            message: response.data.message,
+            severity: response.data.status,
+          })
+        );
+        // useSnack.setSnackbar({
+        //   state: true,
+        //   message: response.data.message,
+        //   severity: response.data.status,
+        // });
         AllDAta();
       } else {
-        useSnack.setSnackbar({
-          state: true,
-          message: response.data.message,
-          severity: response.data.status,
-        });
+        dispatch(
+          reduxSnackbar({
+            state: true,
+            message: response.data.message,
+            severity: response.data.status,
+          })
+        );
+        // useSnack.setSnackbar({
+        //   state: true,
+        //   message: response.data.message,
+        //   severity: response.data.status,
+        // });
       }
     } catch (err) {
       console.log(err, "error");

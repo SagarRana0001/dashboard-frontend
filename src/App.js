@@ -13,7 +13,11 @@ import ActiveUsers from "./dashboard/table/active";
 
 export const UserContext = createContext();
 function App() {
-  const [snackbar, setSnackbar] = useState({ state: false, message: null });
+  const [snackbar, setSnackbar] = useState({
+    state: false,
+    message: null,
+    severity: null,
+  });
   return (
     <>
       <UserContext.Provider value={{ snackbar, setSnackbar }}>
