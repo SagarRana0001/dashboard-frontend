@@ -1,29 +1,36 @@
 import { Alert, Snackbar } from "@mui/material";
 import { CLICKAWAY, ERROR, SUCCESS } from "../utils/constants";
-export const SuccessSnackbar = ({ snackbar, setSnackbar }) => {
+import { useDispatch, useSelector } from "react-redux";
+import { reduxSnackbar } from "../redux/slice/slice";
+export const SuccessSnackbar = ({}) => {
+  const count = useSelector((state) => state.counter.value);
+  console.log(count, "gggggg");
+  const dispatch = useDispatch();
   const handleSnackbarClose = (event, reason) => {
     if (reason === CLICKAWAY) {
       return;
     }
-    setSnackbar({
-      state: false,
-      message: null,
-      severity: null,
-    });
+    dispatch(
+      reduxSnackbar({
+        state: false,
+        message: null,
+        severity: null,
+      })
+    );
   };
   return (
     <Snackbar
-      open={snackbar.state}
+      open={count?.state}
       autoHideDuration={4000}
       onClose={handleSnackbarClose}
     >
       <Alert
         onClose={handleSnackbarClose}
-        severity={snackbar.severity === SUCCESS ? SUCCESS : ERROR}
+        severity={count?.severity === SUCCESS ? SUCCESS : ERROR}
         variant="filled"
         sx={{ width: "100%" }}
       >
-        {snackbar.message}
+        {count.message}
       </Alert>
     </Snackbar>
   );
