@@ -18,7 +18,7 @@ import {
 import DownloadIcon from "@mui/icons-material/Download";
 import AddIcon from "@mui/icons-material/Add";
 import "./table.css";
-import { UserContext } from "../../App";
+import { useLazyGetAllDataApiByNameQuery } from "../../redux/services/alldatatoolkit";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -39,17 +39,22 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 export default function DataTable() {
+  const [allData, { data, error, isLoading }] =
+    useLazyGetAllDataApiByNameQuery();
+
   const [userData, setUserData] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
+    setUserData(data);
+  }, [data, isLoading]);
+  useEffect(() => {
     AllDAta();
   }, []);
-
   const AllDAta = async () => {
-    const response = await axios.get("http://localhost:8000/alldata");
-    setUserData(response.data);
+    allData();
   };
+
   const addUser = () => {
     navigate("/");
   };
@@ -89,7 +94,7 @@ export default function DataTable() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {userData.map((row) => (
+            {userData?.map((row) => (
               <StyledTableRow key={row.name}>
                 <StyledTableCell component="th" scope="row">
                   {row.name}

@@ -24,27 +24,30 @@ import {
 } from "@mui/icons-material";
 import "./profile.css";
 import { reduxSnackbar } from "../../redux/slice/slice";
+import { useGetUploadImgApiByNameMutation } from "../../redux/services/uploadImgApi";
 
 export default function ProfileCard() {
+  const [updateImg, { data: imgData, error, isLoading }] =
+    useGetUploadImgApiByNameMutation();
   const dispatch = useDispatch();
   const location = useLocation();
   const data = location?.state?.data;
   const [user, setUser] = useState({});
   const [image, setimage] = useState("");
+  useEffect(() => {
+    if (!imgData) return;
+    if (imgData) {
+      setimage(imgData.img);
+      setUser({ ...user, img: imgData.img });
+    } else {
+      console.log("error in hitting the api upload");
+    }
+  }, [imgData]);
   const cancel = () => {
     navigate("/dashboard");
   };
   const getData = async (data) => {
-    const response = await axios.put(`http://localhost:8000/upload`, data, {
-      headers: { Authorization: "Bearer" + token },
-    });
-    if (response) {
-      setimage(response.data.img);
-      setUser({ ...user, img: response.data.img });
-      console.log("Api did hit upload", response.data);
-    } else {
-      console.log("error in hitting the api upload");
-    }
+    updateImg({ body: data, token: token });
   };
   const onlyUser = async (e) => {
     try {

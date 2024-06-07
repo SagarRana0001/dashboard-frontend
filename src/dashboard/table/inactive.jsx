@@ -20,7 +20,28 @@ import RestoreIcon from "@mui/icons-material/Restore";
 import RestartAltIcon from "@mui/icons-material/RestartAlt";
 import DeleteIcon from "@mui/icons-material/Delete";
 import "./table.css";
+import { useLazyGetAllDataApiByNameQuery } from "../../redux/services/alldatatoolkit";
+import { useGetDeleteApiByNameMutation } from "../../redux/services/deletetoolkit";
+import { useGetpermanentDeleteApiByNameMutation } from "../../redux/services/permanentDeleteApi";
 export default function DataTable() {
+  const [allData, { data, error, isLoading }] =
+    useLazyGetAllDataApiByNameQuery();
+  const [
+    deleteData,
+    {
+      data: deletedDataFromApi,
+      error: deleteError,
+      isLoading: deleteIsLoading,
+    },
+  ] = useGetDeleteApiByNameMutation();
+  const [
+    PermanentDeleteData,
+    {
+      data: permanentdeletedDataFromApi,
+      error: permanentdeleteError,
+      isLoading: permanentdeleteIsLoading,
+    },
+  ] = useGetpermanentDeleteApiByNameMutation();
   const [jsonUser, setjsonUser] = useState({});
   const [dltData, setDltData] = useState();
   const [open, setOpen] = React.useState(false);
@@ -38,27 +59,30 @@ export default function DataTable() {
     setjsonUser(localUser);
     AllDAta();
   }, []);
-  const AllDAta = async () => {
-    const response = await axios.get("http://localhost:8000/alldata");
-    const inactiveUser = response.data.filter((ele) => {
+
+  useEffect(() => {
+    const inactiveUser = data?.filter((ele) => {
       return ele.isActive === false;
     });
-
     setUserData(inactiveUser);
+  }, [data, isLoading]);
+  useEffect(() => {
+    if (!deletedDataFromApi) return;
+
+    AllDAta();
+  }, [deletedDataFromApi]);
+  useEffect(() => {
+    if (!permanentdeletedDataFromApi) return;
+
+    AllDAta();
+  }, [permanentdeletedDataFromApi]);
+  const AllDAta = async () => {
+    allData();
   };
   const restore = (datauser) => {
     async function formHandel(e) {
       const token = localStorage.getItem("token");
-      await axios.put(
-        `http://localhost:8000/update?id=${datauser?._id}`,
-        {
-          isActive: true,
-        },
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-      AllDAta();
+      deleteData({ body: { isActive: true }, id: datauser._id, token: token });
     }
     formHandel();
     handleClose();
@@ -67,13 +91,11 @@ export default function DataTable() {
   const finalDelete = () => {
     async function formHandel(e) {
       const token = localStorage.getItem("token");
-      const response = await axios.delete(
-        `http://localhost:8000/delete?id=${dltData?._id}`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-      AllDAta();
+      PermanentDeleteData({
+        body: { isActive: true },
+        id: dltData._id,
+        token: token,
+      });
     }
     formHandel();
     handleClose();
@@ -86,7 +108,7 @@ export default function DataTable() {
   };
   const searchbar = (e) => {
     const findValue = e.target.value;
-    console.log(findValue, "op");
+
     if (findValue) {
       const searchedData = userData.filter(
         (ele) => ele.name.includes(findValue) || ele.email.includes(findValue)
@@ -126,7 +148,7 @@ export default function DataTable() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {userData.map((row) => (
+            {userData?.map((row) => (
               <StyledTableRow key={row.name}>
                 <StyledTableCell component="th" scope="row">
                   {row.name}

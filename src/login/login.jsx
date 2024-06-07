@@ -22,7 +22,19 @@ import {
 import "./login.css";
 import { useDispatch } from "react-redux";
 import { reduxSnackbar } from "../redux/slice/slice";
+import { useGetLoginByNameMutation } from "../redux/services/logintoolkit";
+import { useGetSignUpApiByNameMutation } from "../redux/services/signuptoolkit";
 const Login = () => {
+  const [loginUser, { data, error, isLoading }] = useGetLoginByNameMutation();
+  const [
+    registerUser,
+    {
+      data: registerData,
+      isError: registerError,
+      isLoading: registerIsLoading,
+    },
+  ] = useGetSignUpApiByNameMutation();
+
   const dispatch = useDispatch();
   const location = useLocation();
   const path = location.pathname;
@@ -48,6 +60,63 @@ const Login = () => {
     },
   });
   const [isSignIn, setIsSignIn] = useState(true);
+
+  useEffect(() => {
+    if (isLoading) return;
+    if (data?.status === "success") {
+      if (data?.token) {
+        let token = data?.token;
+        let user = data?.user;
+        localStorage.setItem("token", token);
+        const userJsonData = JSON.stringify(user);
+        localStorage.setItem("user", userJsonData);
+        navigate("/dashboard");
+        dispatch(
+          reduxSnackbar({
+            state: true,
+            message: data?.message,
+            severity: data?.status,
+          })
+        );
+      }
+    } else {
+      dispatch(
+        reduxSnackbar({
+          state: true,
+          message: data?.message,
+          severity: data?.status,
+        })
+      );
+    }
+  }, [data, isLoading]);
+  useEffect(() => {
+    if (registerIsLoading) return;
+    if (registerData?.status === "success") {
+      if (registerData?.token) {
+        let token = registerData?.token;
+        let user = registerData?.user;
+        localStorage.setItem("token", token);
+        const userJsonData = JSON.stringify(user);
+        localStorage.setItem("user", userJsonData);
+        navigate("/dashboard");
+        dispatch(
+          reduxSnackbar({
+            state: true,
+            message: registerData?.message,
+            severity: registerData?.status,
+          })
+        );
+      }
+    } else {
+      dispatch(
+        reduxSnackbar({
+          state: true,
+          message: registerData?.message,
+          severity: registerData?.severity,
+        })
+      );
+    }
+  }, [registerData, registerIsLoading]);
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
@@ -60,61 +129,10 @@ const Login = () => {
     }
 
     async function formHandel(e) {
-      const response = await axios.post("http://localhost:8000/register", data);
-      if (response.data.status === "success") {
-        if (response.data.token) {
-          let token = response.data.token;
-          let user = response.data.user;
-          localStorage.setItem("token", token);
-          const userJsonData = JSON.stringify(user);
-          localStorage.setItem("user", userJsonData);
-          navigate("/dashboard");
-          dispatch(
-            reduxSnackbar({
-              state: true,
-              message: response.data.message,
-              severity: response.data.severity,
-            })
-          );
-        }
-      } else {
-        dispatch(
-          reduxSnackbar({
-            state: true,
-            message: response.data.message,
-            severity: response.data.severity,
-          })
-        );
-      }
+      registerUser({ body: data });
     }
     async function loginFunc(e) {
-      const response = await axios.post("http://localhost:8000/login", data);
-      console.log(response, "res");
-      if (response.data.status === "success") {
-        if (response.data.token) {
-          let token = response.data.token;
-          let user = response.data.user;
-          localStorage.setItem("token", token);
-          const userJsonData = JSON.stringify(user);
-          localStorage.setItem("user", userJsonData);
-          navigate("/dashboard");
-          dispatch(
-            reduxSnackbar({
-              state: true,
-              message: response.data.message,
-              severity: response.data.status,
-            })
-          );
-        }
-      } else {
-        dispatch(
-          reduxSnackbar({
-            state: true,
-            message: response.data.message,
-            severity: response.data.status,
-          })
-        );
-      }
+      loginUser({ body: data });
     }
   };
 

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
@@ -17,8 +17,11 @@ import {
 import "./update.css";
 import { useDispatch } from "react-redux";
 import { reduxSnackbar } from "../redux/slice/slice";
+import { useGetUpdateApiByNameMutation } from "../redux/services/updateApi";
 
 const Form = () => {
+  const [updatedDataApi, { data: updateData, error, isLoading }] =
+    useGetUpdateApiByNameMutation();
   const location = useLocation();
   const editdata = location?.state?.editdata;
   const data = location?.state?.data;
@@ -40,21 +43,13 @@ const Form = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const onSubmit = (current_data, e) => {
-    const token = localStorage.getItem("token");
-    async function formHandel(e) {
-      const response = await axios.put(
-        `http://localhost:8000/update?id=${data ? data?._id : editdata?._id}`,
-        current_data,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
+  useEffect(() => {
+    if (updateData) {
       let localuser = JSON.parse(localStorage.getItem("user"));
-      if (response.data.user["_id"] === localuser["_id"]) {
-        localStorage.setItem("user", JSON.stringify(response.data.user));
+      if (updateData.user["_id"] === localuser["_id"]) {
+        localStorage.setItem("user", JSON.stringify(updateData.user));
       }
-      let user = response.data.user;
+      let user = updateData?.user;
       localStorage.getItem("token");
       const userJsonData = user;
       localStorage.getItem("user", userJsonData);
@@ -63,10 +58,21 @@ const Form = () => {
       dispatch(
         reduxSnackbar({
           state: true,
-          message: response.data.message,
-          severity: response.data.status,
+          message: updateData.message,
+          severity: updateData.status,
         })
       );
+    }
+  }, [updateData]);
+
+  const onSubmit = (current_data, e) => {
+    const token = localStorage.getItem("token");
+    async function formHandel(e) {
+      updatedDataApi({
+        body: current_data,
+        id: data ? data?._id : editdata?._id,
+        token: token,
+      });
     }
     formHandel();
   };
