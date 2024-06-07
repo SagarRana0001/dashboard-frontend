@@ -30,6 +30,7 @@ import { reduxSnackbar } from "../../redux/slice/slice";
 import { useDispatch } from "react-redux";
 import { useLazyGetAllDataApiByNameQuery } from "../../redux/services/alldatatoolkit";
 import { useGetDeleteApiByNameMutation } from "../../redux/services/deletetoolkit";
+import { useGetUploadCsvDataApiByNameMutation } from "../../redux/services/uploadCsvDataApi";
 export default function DataTable() {
   const [allData, { data, error, isLoading }] =
     useLazyGetAllDataApiByNameQuery();
@@ -41,6 +42,14 @@ export default function DataTable() {
       isLoading: deleteIsLoading,
     },
   ] = useGetDeleteApiByNameMutation();
+  const [
+    uploadCsv,
+    {
+      data: uploadCsvData,
+      error: uploadCsvError,
+      isLoading: uploadCsvIsLoading,
+    },
+  ] = useGetUploadCsvDataApiByNameMutation();
   const dispatch = useDispatch();
   const [jsonUser, setjsonUser] = useState({});
   const [dltData, setDltData] = useState();
@@ -74,7 +83,28 @@ export default function DataTable() {
   const AllDAta = async () => {
     allData();
   };
-
+  useEffect(() => {
+    if (uploadCsvData) {
+      if (uploadCsvData.status === 200) {
+        dispatch(
+          reduxSnackbar({
+            state: true,
+            message: uploadCsvData.data.message,
+            severity: uploadCsvData.data.status,
+          })
+        );
+        AllDAta();
+      } else {
+        dispatch(
+          reduxSnackbar({
+            state: true,
+            message: uploadCsvData.data.message,
+            severity: uploadCsvData.data.status,
+          })
+        );
+      }
+    }
+  }, [uploadCsvData]);
   const viewAll = (data) => {
     navigate("/dashboard/profile", { state: { data } });
   };
@@ -120,36 +150,37 @@ export default function DataTable() {
 
     try {
       const token = localStorage.getItem("token");
-      const response = await axios.post(
-        "http://localhost:8000/upload-data",
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      uploadCsv({ body: formData, token: token });
+      // const response = await axios.post(
+      //   "http://localhost:8000/upload-data",
+      //   formData,
+      //   {
+      //     headers: {
+      //       "Content-Type": "multipart/form-data",
+      //       Authorization: `Bearer ${token}`,
+      //     },
+      //   }
+      // );
 
-      if (response.status === 200) {
-        dispatch(
-          reduxSnackbar({
-            state: true,
-            message: response.data.message,
-            severity: response.data.status,
-          })
-        );
+      // if (response.status === 200) {
+      //   dispatch(
+      //     reduxSnackbar({
+      //       state: true,
+      //       message: response.data.message,
+      //       severity: response.data.status,
+      //     })
+      //   );
 
-        AllDAta();
-      } else {
-        dispatch(
-          reduxSnackbar({
-            state: true,
-            message: response.data.message,
-            severity: response.data.status,
-          })
-        );
-      }
+      //   AllDAta();
+      // } else {
+      //   dispatch(
+      //     reduxSnackbar({
+      //       state: true,
+      //       message: response.data.message,
+      //       severity: response.data.status,
+      //     })
+      //   );
+      // }
     } catch (err) {
       console.log(err, "error");
     }
