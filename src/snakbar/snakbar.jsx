@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { reduxSnackbar } from "../redux/slice/slice";
 export const SuccessSnackbar = ({}) => {
   const count = useSelector((state) => state.counter.value);
-  console.log(count, "gggggg");
+
   const dispatch = useDispatch();
   const handleSnackbarClose = (event, reason) => {
     if (reason === CLICKAWAY) {

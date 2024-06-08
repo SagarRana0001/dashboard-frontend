@@ -28,7 +28,19 @@ import DownloadIcon from "@mui/icons-material/Download";
 import { StyledTableRow, StyledTableCell, style } from "./styleTableComponet";
 import { reduxSnackbar } from "../../redux/slice/slice";
 import { useDispatch } from "react-redux";
+import { useLazyGetAllDataApiByNameQuery } from "../../redux/services/alldatatoolkit";
+import { useGetDeleteApiByNameMutation } from "../../redux/services/deletetoolkit";
 export default function DataTable() {
+  const [allData, { data, error, isLoading }] =
+    useLazyGetAllDataApiByNameQuery();
+  const [
+    deleteData,
+    {
+      data: deletedDataFromApi,
+      error: deleteError,
+      isLoading: deleteIsLoading,
+    },
+  ] = useGetDeleteApiByNameMutation();
   const dispatch = useDispatch();
   const [jsonUser, setjsonUser] = useState({});
   const [dltData, setDltData] = useState();
@@ -47,14 +59,22 @@ export default function DataTable() {
     setjsonUser(localUser);
     AllDAta();
   }, []);
-  const AllDAta = async () => {
-    const response = await axios.get("http://localhost:8000/alldata");
-    const activeUser = response.data.filter((ele) => {
+  useEffect(() => {
+    const activeUser = data?.filter((ele) => {
       return ele.isActive === true;
     });
 
     setUserData(activeUser);
+  }, [data, isLoading]);
+  useEffect(() => {
+    if (!deletedDataFromApi) return;
+
+    AllDAta();
+  }, [deletedDataFromApi]);
+  const AllDAta = async () => {
+    allData();
   };
+
   const viewAll = (data) => {
     navigate("/dashboard/profile", { state: { data } });
   };
@@ -64,15 +84,7 @@ export default function DataTable() {
   const finalSoftDelete = () => {
     async function formHandel(e) {
       const token = localStorage.getItem("token");
-
-      const response = await axios.put(
-        `http://localhost:8000/update?id=${dltData?._id}`,
-        { isActive: false },
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-      AllDAta();
+      deleteData({ body: { isActive: false }, id: dltData._id, token: token });
     }
     formHandel();
     handleClose();
@@ -127,11 +139,7 @@ export default function DataTable() {
             severity: response.data.status,
           })
         );
-        // useSnack.setSnackbar({
-        //   state: true,
-        //   message: response.data.message,
-        //   severity: response.data.status,
-        // });
+
         AllDAta();
       } else {
         dispatch(
@@ -141,11 +149,6 @@ export default function DataTable() {
             severity: response.data.status,
           })
         );
-        // useSnack.setSnackbar({
-        //   state: true,
-        //   message: response.data.message,
-        //   severity: response.data.status,
-        // });
       }
     } catch (err) {
       console.log(err, "error");
@@ -205,7 +208,7 @@ export default function DataTable() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {userData.map((row) => (
+            {userData?.map((row) => (
               <StyledTableRow key={row.name}>
                 <StyledTableCell component="th" scope="row">
                   {row.name}

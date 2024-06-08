@@ -7,27 +7,33 @@ import Typography from "@mui/material/Typography";
 import axios from "axios";
 import { Button, Stack } from "@mui/material";
 import "./csv.css";
+import { useLazyGetAllDataApiByNameQuery } from "../redux/services/alldatatoolkit";
 export default function CsvCard() {
+  const [allData, { data: csvData, error, isLoading }] =
+    useLazyGetAllDataApiByNameQuery();
   const [data, setData] = useState([]);
   useEffect(() => {
+    if (!csvData) return;
+    console.log(csvData, "csvData");
+    const allUsers = csvData;
+    const activeUsers = [];
+    const inActiveUsers = [];
+    csvData.map((user) => {
+      if (user.isActive) {
+        activeUsers.push(user);
+      } else {
+        inActiveUsers.push(user);
+      }
+    });
+    setData({
+      allUsers: allUsers,
+      activeUsers: activeUsers,
+      inActiveUsers: inActiveUsers,
+    });
+  }, [csvData, isLoading]);
+  useEffect(() => {
     const handleData = async () => {
-      const response = await axios.get("http://localhost:8000/alldata");
-
-      const allUsers = response.data;
-      const activeUsers = [];
-      const inActiveUsers = [];
-      response.data.map((user) => {
-        if (user.isActive) {
-          activeUsers.push(user);
-        } else {
-          inActiveUsers.push(user);
-        }
-      });
-      setData({
-        allUsers: allUsers,
-        activeUsers: activeUsers,
-        inActiveUsers: inActiveUsers,
-      });
+      allData();
     };
     handleData();
   }, []);
@@ -59,7 +65,6 @@ export default function CsvCard() {
               Total User
             </Typography>
             <Typography className="userFont" component="div">
-              {console.log(data)}
               {data?.allUsers?.length}
             </Typography>
             <Box sx={{ textAlign: "end", marginTop: "20px" }}>
